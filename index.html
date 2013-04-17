@@ -24,6 +24,7 @@
                     var setColor = setInterval($.proxy(this.colorer, this), 1000);
                 }
 
+                // Возвращает нужное количество элементов и устанавливает размеры обрамляющего
                 navalnyModel.prototype.elNums = function(first_argument) {
                     var hei = Math.ceil(window.innerHeight/this.elHeight);
                     var wid = Math.ceil(window.innerWidth/this.elWidth);
@@ -39,7 +40,6 @@
 
                 //Устанавливает новое число элементов
                 navalnyModel.prototype.adder = function(elNums) {
-                    console.log(elNums)
                     if(this.dom.length > elNums){
                         var to = this.dom.length-elNums;
                         for(var i = 0; i<to; i++){
