@@ -1,3 +1,3 @@
 Navalny site
 ============
-Fun site about Alexey Navalny
+[Fun site](http://dev.nim579.ru/navalny/) about [Alexey Navalny](http://navalny.livejournal.com/)
