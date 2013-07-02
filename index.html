@@ -50,6 +50,7 @@
                     if(this.dom.length > elNums){
                         var to = this.dom.length-elNums;
                         for(var i = 0; i<to; i++){
+                            this.dom[this.dom.length - 1].remove()
                             this.dom.pop()
                         }
                     }
@@ -57,11 +58,11 @@
                         var to = elNums-this.dom.length;
                         for(var i = 0; i<to; i++){
                             this.dom.push(
-                                $(this.tmpl).css({'background-color': this.getColor()+''})
+                                $(this.tmpl).css({'background-color': this.getColor()+''}).appendTo(this.wrap)
                             );
                         }
                     }
-                    this.wrap.html(this.dom);
+                    //this.wrap.html(this.dom);
                 };
 
                 // меняет цвет фона у элементов
