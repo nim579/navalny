@@ -18,18 +18,50 @@
             var navalnyModel = (function(){
 
                 function navalnyModel(){
-                    this.elHeight = 41;
-                    this.elWidth = 200;
                     this.wrap = $('.wrap');
                     this.tmpl = '<div class="item"></div>'
                     this.dom = [];
+                    this.mask = window.location.hash.replace(/^\#/, '') || './navalny.png';
+
+                    this.loadImage().done( $.proxy(this.init, this) );
+
+                    $(window).bind('hashchange', $.proxy(function(){
+                        if(window.location.hash.replace(/^\#/, '') !== this.mask){
+                            this.mask = window.location.hash.replace(/^\#/, '') || './navalny.png';
+                            this.loadImage().done( $.proxy(this.init, this) );
+                        }
+                    }, this) );
+                    
+                }
+
+                navalnyModel.prototype.init = function(){
+                    this.adder(0);
 
                     this.elementsNum = this.elNums();
                     this.adder(this.elementsNum);
-                    $(window).bind('resize', $.proxy(this.resize, this));
 
-                    var setColor = setInterval($.proxy(this.colorer, this), 1000);
-                }
+                    this.resizer = $.proxy(this.resize, this);
+                    $(window).unbind('resize', this.resizer).bind('resize', this.resizer);
+
+                    if(this.setColor) clearInterval(this.setColor);
+                    this.setColor = setInterval($.proxy(this.colorer, this), 1000);
+                };
+
+                navalnyModel.prototype.loadImage = function() {
+                    var loader = new $.Deferred();
+                    var _this = this;
+
+                    var img = new Image();
+                    
+                    img.onload = function(){
+                        _this.elWidth = img.width;
+                        _this.elHeight = img.height;
+                        $('.mask').css('background', 'url(' + img.src + ') repeat');
+                        loader.resolve();
+                    }
+                    img.src = this.mask;
+                    return loader;
+                };
 
                 // Возвращает нужное количество элементов и устанавливает размеры обрамляющего
                 navalnyModel.prototype.elNums = function(first_argument) {
@@ -58,7 +90,7 @@
                         var to = elNums-this.dom.length;
                         for(var i = 0; i<to; i++){
                             this.dom.push(
-                                $(this.tmpl).css({'background-color': this.getColor()+''}).appendTo(this.wrap)
+                                $(this.tmpl).css({'background-color': this.getColor()+'', 'width': this.elWidth+'px', 'height': this.elHeight+'px'}).appendTo(this.wrap)
                             );
                         }
                     }
@@ -86,8 +118,7 @@
                 width: 0;
                 height: 0;
                 overflow: hidden;
-                background-color: #fff;
-                background-image: url('navalny.png') no-repeat;
+                background-color: #1c1c22;
             }
             .wrap {
                 position: absolute;
@@ -96,14 +127,20 @@
             }
             .item {
                 float: left;
-                width: 200px;
-                height: 41px;
-                background: url('navalny.png') no-repeat;
                 transition: background-color 1.3s;
+            }
+            .mask {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 10;
             }
         </style>
     </head>
     <body>
         <div class="wrap"></div>
+        <div class="mask"></div>
     </body>
 </html>
