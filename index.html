@@ -26,9 +26,8 @@
                     this.loadImage().done( $.proxy(this.init, this) );
 
                     $(window).bind('hashchange', $.proxy(function(){
-                        if(window.location.hash.replace(/^\#/, '') !=== this.mask){
+                        if(window.location.hash.replace(/^\#/, '') !== this.mask){
                             this.mask = window.location.hash.replace(/^\#/, '') || './navalny.png';
-                            console.log('hc', this.mask, this);
                             this.loadImage().done( $.proxy(this.init, this) );
                         }
                     }, this) );
@@ -36,9 +35,13 @@
                 }
 
                 navalnyModel.prototype.init = function(){
+                    this.adder(0);
+
                     this.elementsNum = this.elNums();
                     this.adder(this.elementsNum);
-                    $(window).bind('resize', $.proxy(this.resize, this));
+
+                    this.resizer = $.proxy(this.resize, this);
+                    $(window).unbind('resize', this.resizer).bind('resize', this.resizer);
 
                     if(this.setColor) clearInterval(this.setColor);
                     this.setColor = setInterval($.proxy(this.colorer, this), 1000);
